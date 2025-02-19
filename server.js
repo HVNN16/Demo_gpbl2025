@@ -1,20 +1,22 @@
+// server.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static("views")); // Phục vụ file HTML từ thư mục views
 
 let sensorData = { temperature: 0, humidity: 0, light: 0, distance: 0 };
-let count = 0;
 
-// Handle POST request to update sensor data
 app.post("/sensor-data", (req, res) => {
-    count++;
-
-    // Cập nhật dữ liệu mới
     sensorData = {
         temperature: req.body.temperature,
         humidity: req.body.humidity,
@@ -22,23 +24,31 @@ app.post("/sensor-data", (req, res) => {
         distance: req.body.distance
     };
 
-    console.log("Dữ liệu nhận được:", sensorData);
+    console.log("🔥 Dữ liệu cảm biến cập nhật:", sensorData);
 
-    // Khi nhận được 5 lần dữ liệu, xóa tất cả dữ liệu và ghi dữ liệu mới
-    if (count >= 5) {
-        console.log("Đã nhận đủ 5 lần dữ liệu, xóa dữ liệu cũ và ghi dữ liệu mới!");
-        sensorData = { temperature: 0, humidity: 0, light: 0, distance: 0 }; // Xóa dữ liệu
-        count = 0; // Reset lại số lần nhận dữ liệu
-    }
+    // Gửi dữ liệu mới đến tất cả client ngay lập tức
+    io.emit("updateSensorData", sensorData);
 
     res.send("Dữ liệu đã nhận!");
 });
 
-// Handle GET request to send the current sensor data
 app.get("/sensor-data", (req, res) => {
     res.json(sensorData);
 });
 
-app.listen(3000, () => {
-    console.log("Server chạy tại http://localhost:3000");
+// Khi client kết nối WebSocket
+io.on("connection", (socket) => {
+    console.log("✅ Client đã kết nối WebSocket");
+
+    // Gửi dữ liệu hiện tại ngay khi client kết nối
+    socket.emit("updateSensorData", sensorData);
+
+    socket.on("disconnect", () => {
+        console.log("❌ Client đã ngắt kết nối WebSocket");
+    });
+});
+
+// Khởi động server
+server.listen(3000, () => {
+    console.log("🚀 Server chạy tại http://localhost:3000");
 });
