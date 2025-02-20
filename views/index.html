@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -51,6 +51,19 @@
             <div class="icon">📏</div>
             <p><strong>Distance:</strong> <span id="distance">0</span> cm</p>
         </div>
+        <div id="fireAlert" style="
+    display: none;
+    padding: 15px;
+    background: red;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 5px;
+">
+    🔥 CẢNH BÁO: Phát hiện cháy! 🔥
+</div>
+
     </div>
 
     <script>
@@ -70,7 +83,126 @@
             document.getElementById("humidity").textContent = data.humidity.toFixed(2);
             document.getElementById("light").textContent = data.light.toFixed(2);
             document.getElementById("distance").textContent = data.distance.toFixed(2);
+            
+                // Nếu phát hiện lửa, hiển thị cảnh báo
+                if (data.flameDetected === 1) { 
+                    document.getElementById("fireAlert").style.display = "block";
+                } else {
+                    document.getElementById("fireAlert").style.display = "none";
+                }
+            
+        });
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Sensor Data</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            text-align: center;
+        }
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        #fireAlert, #buzzerAlert {
+            display: none;
+            padding: 15px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        #fireAlert {
+            background: red;
+        }
+        #buzzerAlert {
+            background: orange;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-time Sensor Data</h1>
+    <div class="container">
+        <div class="card">
+            <div class="icon">🌡️</div>
+            <p><strong>Temperature:</strong> <span id="temperature">0</span> °C</p>
+        </div>
+        <div class="card">
+            <div class="icon">💧</div>
+            <p><strong>Humidity:</strong> <span id="humidity">0</span> %</p>
+        </div>
+        <div class="card">
+            <div class="icon">💡</div>
+            <p><strong>Light:</strong> <span id="light">0</span> %</p>
+        </div>
+        <div class="card">
+            <div class="icon">📏</div>
+            <p><strong>Distance:</strong> <span id="distance">0</span> cm</p>
+        </div>
+    </div>
+
+    <div id="fireAlert">🔥 CẢNH BÁO: Phát hiện cháy! 🔥</div>
+    <div id="buzzerAlert">🔊 Còi báo động đang hoạt động!</div>
+
+    <script>
+        const socket = io();
+
+        socket.on("connect", () => {
+            console.log("✅ WebSocket connection successful!");
+        });
+
+        socket.on("disconnect", () => {
+            console.log("❌ WebSocket disconnected!");
+        });
+
+        socket.on("updateSensorData", (data) => {
+            console.log("🔥 New data received:", data);
+            document.getElementById("temperature").textContent = data.temperature.toFixed(2);
+            document.getElementById("humidity").textContent = data.humidity.toFixed(2);
+            document.getElementById("light").textContent = data.light.toFixed(2);
+            document.getElementById("distance").textContent = data.distance.toFixed(2);
+
+            // Cảnh báo cháy
+            if (data.flameDetected === 1) { 
+                document.getElementById("fireAlert").style.display = "block";
+            } else {
+                document.getElementById("fireAlert").style.display = "none";
+            }
+
+            // Hiển thị cảnh báo còi nếu còi kêu
+            if (data.distance <= 20 || data.flameDetected === 1) {
+                document.getElementById("buzzerAlert").style.display = "block";
+            } else {
+                document.getElementById("buzzerAlert").style.display = "none";
+            }
         });
     </script>
 </body>
 </html>
+

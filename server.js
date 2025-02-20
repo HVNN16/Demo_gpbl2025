@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -12,8 +11,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static("views")); // Phục vụ file HTML từ thư mục views
-
+app.use(express.static("views")); 
 let sensorData = { temperature: 0, humidity: 0, light: 0, distance: 0 };
 
 app.post("/sensor-data", (req, res) => {
@@ -21,7 +19,8 @@ app.post("/sensor-data", (req, res) => {
         temperature: req.body.temperature,
         humidity: req.body.humidity,
         light: req.body.light,
-        distance: req.body.distance
+        distance: req.body.distance,
+        flameDetected : req.body.flameDetected
     };
 
     console.log("🔥 Dữ liệu cảm biến cập nhật:", sensorData);

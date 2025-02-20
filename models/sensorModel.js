@@ -1,5 +1,4 @@
-// models/sensorModel.js
-let sensorData = { temperature: 0, humidity: 0, light: 0, distance: 0 };
+let sensorData = { temperature: 0, humidity: 0, light: 0, distance: 0 ,flameDetected: 0 };
 let count = 0;
 let io = null;
 

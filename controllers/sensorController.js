@@ -1,4 +1,3 @@
-// controllers/sensorController.js
 const SensorModel = require("../models/sensorModel");
 
 exports.getSensorData = (req, res) => {
