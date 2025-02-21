@@ -346,9 +346,8 @@
             <button id="ledButton" class="led-button led-off">Bật LED</button>
         </div>
     </div>
-
     <script>
-        const socket = io();
+        const socket = io(); // Kết nối đến server
         const ledButton = document.getElementById("ledButton");
         let ledState = 0;
     
@@ -369,11 +368,21 @@
         });
     
         socket.on("updateSensorData", (data) => {
-            document.getElementById("temperature").textContent = data.temperature.toFixed(2);
-            document.getElementById("humidity").textContent = data.humidity.toFixed(2);
-            document.getElementById("light").textContent = data.light.toFixed(2);
-            document.getElementById("distance").textContent = data.distance.toFixed(2);
-            document.getElementById("water").textContent = data.water.toFixed(2);
+            console.log("Dữ liệu cảm biến nhận được:", data);
+    
+            // Kiểm tra nếu dữ liệu là một mảng, lấy phần tử mới nhất
+            if (Array.isArray(data) && data.length > 0) {
+                data = data[data.length - 1]; // Lấy dữ liệu mới nhất
+            } else if (typeof data !== "object" || data === null) {
+                console.error("Dữ liệu không hợp lệ:", data);
+                return;
+            }
+    
+            document.getElementById("temperature").textContent = data.temperature?.toFixed(2) ?? "N/A";
+            document.getElementById("humidity").textContent = data.humidity?.toFixed(2) ?? "N/A";
+            document.getElementById("light").textContent = data.light?.toFixed(2) ?? "N/A";
+            document.getElementById("distance").textContent = data.distance?.toFixed(2) ?? "N/A";
+            document.getElementById("water").textContent = data.water?.toFixed(2) ?? "N/A";
     
             updateTouchLightStatus(data.light);
     
@@ -416,5 +425,6 @@
             }
         }
     </script>
+    
 </body>
 </html>

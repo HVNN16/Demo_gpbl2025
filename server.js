@@ -67,3 +67,43 @@ io.on("connection", (socket) => {
 server.listen(3000, () => {
     console.log("🚀 Server chạy tại http://localhost:3000");
 });
+
+// const express = require("express");
+// const http = require("http");
+// const { Server } = require("socket.io");
+// const cors = require("cors");
+
+// const app = express();
+// const server = http.createServer(app);
+// const io = new Server(server, {
+//     cors: { origin: "*" }
+// });
+
+// app.use(express.json());
+// app.use(cors());
+
+// let sensorData = {
+//     temperature: 0,
+//     humidity: 0,
+//     light: 0,
+//     water: 0,
+//     distance: 0,
+//     flameDetected: 0
+// };
+
+// // API nhận dữ liệu từ Arduino
+// app.post("/sensor-data", (req, res) => {
+//     sensorData = req.body;
+//     console.log("Dữ liệu nhận từ Arduino:", sensorData);
+//     io.emit("updateSensorData", sensorData);
+//     res.send({ status: "success", received: sensorData });
+// });
+
+// // WebSocket kết nối
+// io.on("connection", (socket) => {
+//     console.log("Client đã kết nối:", socket.id);
+//     socket.emit("updateSensorData", sensorData); // Gửi dữ liệu mới nhất khi có client kết nối
+// });
+
+// const PORT = process.env.PORT || 3000;
+// server.listen(PORT, () => console.log(`Server đang chạy tại http://localhost:${PORT}`));
