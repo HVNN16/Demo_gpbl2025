@@ -1,208 +1,420 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Sensor Data</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 200px;
-            text-align: center;
-        }
-        .icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Real-time Sensor Data</h1>
-    <div class="container">
-        <div class="card">
-            <div class="icon">🌡️</div>
-            <p><strong>Temperature:</strong> <span id="temperature">0</span> °C</p>
-        </div>
-        <div class="card">
-            <div class="icon">💧</div>
-            <p><strong>Humidity:</strong> <span id="humidity">0</span> %</p>
-        </div>
-        <div class="card">
-            <div class="icon">💡</div>
-            <p><strong>Light:</strong> <span id="light">0</span> lux</p>
-        </div>
-        <div class="card">
-            <div class="icon">📏</div>
-            <p><strong>Distance:</strong> <span id="distance">0</span> cm</p>
-        </div>
-        <div id="fireAlert" style="
-    display: none;
-    padding: 15px;
-    background: red;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    border-radius: 5px;
-">
-    🔥 CẢNH BÁO: Phát hiện cháy! 🔥
-</div>
-
-    </div>
-
-    <script>
-        const socket = io();
-
-        socket.on("connect", () => {
-            console.log("✅ WebSocket connection successful!");
-        });
-
-        socket.on("disconnect", () => {
-            console.log("❌ WebSocket disconnected!");
-        });
-
-        socket.on("updateSensorData", (data) => {
-            console.log("🔥 New data received:", data);
-            document.getElementById("temperature").textContent = data.temperature.toFixed(2);
-            document.getElementById("humidity").textContent = data.humidity.toFixed(2);
-            document.getElementById("light").textContent = data.light.toFixed(2);
-            document.getElementById("distance").textContent = data.distance.toFixed(2);
-            
-                // Nếu phát hiện lửa, hiển thị cảnh báo
-                if (data.flameDetected === 1) { 
-                    document.getElementById("fireAlert").style.display = "block";
-                } else {
-                    document.getElementById("fireAlert").style.display = "none";
-                }
-            
-        });
-    </script>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Sensor Data</title>
+    <title>Modern Sensor Dashboard</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,255,255,0.8); }
+            100% { box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(-45deg, #e73c7e,#6257ff );
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-hover: rgba(255, 255, 255, 0.15);
+            --glass-effect: blur(10px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Sparkle effect */
+        .dashboard::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            right: -50px;
+            bottom: -50px;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.1) 40%, 
+                transparent 50%);
+            background-size: 200% 200%;
+            animation: sparkle 3s linear infinite;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #fff, #ffffffaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        h1::after {
+            content: '✨';
+            position: absolute;
+            right: -30px;
+            top: 0;
+            animation: sparkle 2s ease infinite;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin: 2.5rem 0 1.5rem;
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            position: relative;
+        }
+
         .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            background: var(--card-hover);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: float 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            background: linear-gradient(45deg, #fff, #ffffffaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
+
+        .control-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 2rem;
             flex-wrap: wrap;
+            margin: 2rem 0;
         }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 200px;
-            text-align: center;
+
+        .led-button {
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
         }
-        .icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+
+        .led-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transition: 0.5s;
         }
-        #fireAlert, #buzzerAlert {
-            display: none;
-            padding: 15px;
+
+        .led-button:hover::before {
+            left: 100%;
+        }
+
+        .led-on {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .led-off {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
             color: white;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 20px;
-            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
         }
-        #fireAlert {
-            background: red;
+
+        .led-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
-        #buzzerAlert {
-            background: orange;
+
+        .alert {
+            animation: pulse 2s infinite, glow 2s infinite;
+        }
+
+        .fire-alert { 
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            box-shadow: 0 0 20px rgba(255, 65, 108, 0.5);
+        }
+
+        .buzzer-alert { 
+            background: linear-gradient(45deg, #f7971e, #ffd200);
+            box-shadow: 0 0 20px rgba(247, 151, 30, 0.5);
+        }
+
+        .water-alert { 
+            background: linear-gradient(45deg, #0396FF, #ABDCFF);
+            box-shadow: 0 0 20px rgba(3, 150, 255, 0.5);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .icon {
+                font-size: 3rem;
+            }
+
+            .value {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Real-time Sensor Data</h1>
-    <div class="container">
-        <div class="card">
-            <div class="icon">🌡️</div>
-            <p><strong>Temperature:</strong> <span id="temperature">0</span> °C</p>
+    <div class="dashboard">
+        <h1>✨ Smart Sensor Dashboard ✨</h1>
+
+        <h2 class="section-title">Sensor Readings</h2>
+        <div class="container">
+            <div class="card">
+                <div class="icon">🌡️</div>
+                <div class="value"><span id="temperature">0</span>°C</div>
+                <div class="label">Nhiệt độ</div>
+            </div>
+            <div class="card">
+                <div class="icon">💧</div>
+                <div class="value"><span id="humidity">0</span>%</div>
+                <div class="label">Độ ẩm</div>
+            </div>
+            <div class="card">
+                <div class="icon">💡</div>
+                <div class="value"><span id="light">0</span>%</div>
+                <div class="label">Ánh sáng</div>
+            </div>
+            <div class="card">
+                <div class="icon">📏</div>
+                <div class="value"><span id="distance">0</span>cm</div>
+                <div class="label">Khoảng cách</div>
+            </div>
+            <div class="card">
+                <div class="icon">🚰</div>
+                <div class="value"><span id="water">0</span>%</div>
+                <div class="label">Nước</div>
+            </div>
         </div>
-        <div class="card">
-            <div class="icon">💧</div>
-            <p><strong>Humidity:</strong> <span id="humidity">0</span> %</p>
+
+        <h2 class="section-title">Cảnh báo</h2>
+        <div class="container">
+            <div id="fireAlert" class="card">
+                <div class="icon">🔥</div>
+                <div class="label">Cháy</div>
+                <div class="value">Không phát hiện</div>
+            </div>
+            <div id="buzzerAlert" class="card">
+                <div class="icon">🔊</div>
+                <div class="label">Còi báo động</div>
+                <div class="value">Không hoạt động</div>
+            </div>
+            <div id="waterAlert" class="card">
+                <div class="icon">💦</div>
+                <div class="label">Mưa</div>
+                <div class="value">Không có mưa</div>
+            </div>
         </div>
-        <div class="card">
-            <div class="icon">💡</div>
-            <p><strong>Light:</strong> <span id="light">0</span> %</p>
-        </div>
-        <div class="card">
-            <div class="icon">📏</div>
-            <p><strong>Distance:</strong> <span id="distance">0</span> cm</p>
+
+        <h2 class="section-title">Điều khiển</h2>
+        <div class="control-container">
+            <div id="touchLightStatus" class="card">
+                <div class="icon">💡</div>
+                <div class="label">Đèn cảm ứng</div>
+                <div class="value"><span id="touchLight">Hoạt động</span></div>
+            </div>
+            <button id="ledButton" class="led-button led-off">Bật LED</button>
         </div>
     </div>
 
-    <div id="fireAlert">🔥 CẢNH BÁO: Phát hiện cháy! 🔥</div>
-    <div id="buzzerAlert">🔊 Còi báo động đang hoạt động!</div>
-
     <script>
         const socket = io();
-
-        socket.on("connect", () => {
-            console.log("✅ WebSocket connection successful!");
+        const ledButton = document.getElementById("ledButton");
+        let ledState = 0;
+    
+        ledButton.addEventListener("click", () => {
+            ledState = ledState ? 0 : 1;
+            fetch("/toggle-led", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ state: ledState })
+            });
         });
-
-        socket.on("disconnect", () => {
-            console.log("❌ WebSocket disconnected!");
+    
+        socket.on("updateLedState", (state) => {
+            ledState = state;
+            ledButton.textContent = ledState ? "Tắt LED" : "Bật LED";
+            ledButton.className = ledState ? "led-button led-on" : "led-button led-off";
+            updateTouchLightStatus();
         });
-
+    
         socket.on("updateSensorData", (data) => {
-            console.log("🔥 New data received:", data);
             document.getElementById("temperature").textContent = data.temperature.toFixed(2);
             document.getElementById("humidity").textContent = data.humidity.toFixed(2);
             document.getElementById("light").textContent = data.light.toFixed(2);
             document.getElementById("distance").textContent = data.distance.toFixed(2);
-
-            // Cảnh báo cháy
-            if (data.flameDetected === 1) { 
-                document.getElementById("fireAlert").style.display = "block";
+            document.getElementById("water").textContent = data.water.toFixed(2);
+    
+            updateTouchLightStatus(data.light);
+    
+            const fireAlert = document.getElementById("fireAlert");
+            if (data.flameDetected) {
+                fireAlert.classList.add("fire-alert", "alert");
+                fireAlert.querySelector(".value").textContent = "Nguy hiểm!";
             } else {
-                document.getElementById("fireAlert").style.display = "none";
+                fireAlert.classList.remove("fire-alert", "alert");
+                fireAlert.querySelector(".value").textContent = "Không phát hiện";
             }
-
-            // Hiển thị cảnh báo còi nếu còi kêu
-            if (data.distance <= 20 || data.flameDetected === 1) {
-                document.getElementById("buzzerAlert").style.display = "block";
+    
+            const buzzerAlert = document.getElementById("buzzerAlert");
+            if (data.distance <= 20 || data.flameDetected) {
+                buzzerAlert.classList.add("buzzer-alert", "alert");
+                buzzerAlert.querySelector(".value").textContent = "Đang hoạt động!";
             } else {
-                document.getElementById("buzzerAlert").style.display = "none";
+                buzzerAlert.classList.remove("buzzer-alert", "alert");
+                buzzerAlert.querySelector(".value").textContent = "Không hoạt động";
+            }
+    
+            const waterAlert = document.getElementById("waterAlert");
+            if (data.water > 50) {
+                waterAlert.classList.add("water-alert", "alert");
+                waterAlert.querySelector(".value").textContent = "Đang có mưa!";
+            } else {
+                waterAlert.classList.remove("water-alert", "alert");
+                waterAlert.querySelector(".value").textContent = "Không có mưa";
             }
         });
+    
+        function updateTouchLightStatus(lightValue = null) {
+            const touchLight = document.getElementById("touchLight");
+            if (ledState) {
+                touchLight.textContent = "Bị vô hiệu hóa";
+            } else if (lightValue !== null && lightValue < 40) {
+                touchLight.textContent = "Bật";
+            } else {
+                touchLight.textContent = "Hoạt động";
+            }
+        }
     </script>
 </body>
 </html>
-
