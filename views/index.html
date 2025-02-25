@@ -396,7 +396,7 @@
             }
     
             const buzzerAlert = document.getElementById("buzzerAlert");
-            if (data.distance <= 20 || data.flameDetected) {
+            if (data.distance <= 5 || data.flameDetected) {
                 buzzerAlert.classList.add("buzzer-alert", "alert");
                 buzzerAlert.querySelector(".value").textContent = "Đang hoạt động!";
             } else {
